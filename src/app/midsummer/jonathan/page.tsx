@@ -51,28 +51,35 @@ export default function JonathanLanding() {
         </ul>
 
         {/* Post to Buttondown in a hidden iframe; our code controls navigation */}
-        <form
-          action="https://buttondown.com/api/emails/embed-subscribe/midsummer"
-          method="post"
-          target="bd-subscribe"
-          onSubmit={handleSubmit}
-          className="flex gap-2 items-center"
-        >
-          <label htmlFor="bd-email" className="sr-only">Enter your email</label>
-          <input
-            type="email"
-            name="email"
-            id="bd-email"
-            required
-            placeholder="you@domain.com"
-            className="w-full max-w-sm px-4 py-2 rounded-md bg-white text-black placeholder:text-zinc-500"
-          />
-          <input type="hidden" name="tag" value="Midsummer-Jonathan" />
-          {/* we let Buttondown's CONFIRMATION redirect send them to /workshop */}
-          <button className="px-4 py-2 rounded-md border border-zinc-500 hover:bg-zinc-100 hover:text-black transition">
-            Get the workshop
-          </button>
-        </form>
+       <form
+  action="https://buttondown.com/api/emails/embed-subscribe/midsummer"
+  method="post"
+  className="flex gap-2 items-center"
+>
+  <label htmlFor="bd-email" className="sr-only">Enter your email</label>
+  <input
+    type="email"
+    name="email"
+    id="bd-email"
+    required
+    placeholder="you@domain.com"
+    className="w-full max-w-sm px-4 py-2 rounded-md bg-white text-black placeholder:text-zinc-500"
+  />
+
+  {/* Tag to identify this workshop */}
+  <input type="hidden" name="tag" value="Midsummer-Jonathan" />
+
+  {/* Force Buttondown to send you back to your pending page after submit */}
+  <input
+    type="hidden"
+    name="redirect_url"
+    value="https://midsummerlab.com/midsummer/jonathan/pending"
+  />
+
+  <button className="px-4 py-2 rounded-md border border-zinc-500 hover:bg-zinc-100 hover:text-black transition">
+    Get the workshop
+  </button>
+</form>
         <iframe name="bd-subscribe" className="hidden" />
 
         <p className="text-xs text-zinc-500">No spam. Unsubscribe anytime.</p>
