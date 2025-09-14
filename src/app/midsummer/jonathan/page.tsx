@@ -1,27 +1,23 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function JonathanLanding() {
-  const router = useRouter();
-  const submitted = useRef(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   useEffect(() => {
-    setIsConfirmed(localStorage.getItem("ms_jonathan_status") === "confirmed");
+    try {
+      setIsConfirmed(localStorage.getItem("ms_jonathan_status") === "confirmed");
+    } catch {}
   }, []);
 
-  function handleSubmit() {
-    if (submitted.current) return; // avoid double submit glitches
-    submitted.current = true;
-
-    const input = document.getElementById("bd-email") as HTMLInputElement | null;
-    if (input?.value) localStorage.setItem("ms_jonathan_email", input.value);
-    localStorage.setItem("ms_jonathan_status", "pending");
-
-    // Post to Buttondown in hidden iframe, then move this tab to /pending
-    setTimeout(() => router.push("/midsummer/jonathan/pending"), 150);
+  function rememberEmail() {
+    try {
+      const input = document.getElementById("bd-email") as HTMLInputElement | null;
+      if (input?.value) localStorage.setItem("ms_jonathan_email", input.value);
+      localStorage.setItem("ms_jonathan_status", "pending");
+    } catch {}
+    // IMPORTANT: We do NOT preventDefault — the form posts normally to Buttondown
   }
 
   return (
@@ -50,39 +46,41 @@ export default function JonathanLanding() {
           <li>A 15-minute action you’ll finish today</li>
         </ul>
 
-        {/* Post to Buttondown in a hidden iframe; our code controls navigation */}
-       <form
-  action="https://buttondown.com/api/emails/embed-subscribe/midsummer"
-  method="post"
-  className="flex gap-2 items-center"
->
-  <label htmlFor="bd-email" className="sr-only">Enter your email</label>
-  <input
-    type="email"
-    name="email"
-    id="bd-email"
-    required
-    placeholder="you@domain.com"
-    className="w-full max-w-sm px-4 py-2 rounded-md bg-white text-black placeholder:text-zinc-500"
-  />
+        <form
+          action="https://buttondown.com/api/emails/embed-subscribe/midsummer"
+          method="post"
+          onSubmit={rememberEmail}
+          className="flex gap-2 items-center"
+        >
+          <label htmlFor="bd-email" className="sr-only">Enter your email</label>
+          <input
+            type="email"
+            name="email"
+            id="bd-email"
+            required
+            placeholder="you@domain.com"
+            className="w-full max-w-sm px-4 py-2 rounded-md bg-white text-black placeholder:text-zinc-500"
+          />
+          <input type="hidden" name="tag" value="Midsummer-Jonathan" />
+          {/* After submit, Buttondown redirects you to /pending */}
+          <input
+            type="hidden"
+            name="redirect_url"
+            value="https://midsummerlab.com/midsummer/jonathan/pending"
+          />
+          <button className="px-4 py-2 rounded-md border border-zinc-500 hover:bg-zinc-100 hover:text-black transition">
+            Get the workshop
+          </button>
+        </form>
 
-  {/* Tag to identify this workshop */}
-  <input type="hidden" name="tag" value="Midsummer-Jonathan" />
-
-  {/* Force Buttondown to send you back to your pending page after submit */}
-  <input
-    type="hidden"
-    name="redirect_url"
-    value="https://midsummerlab.com/midsummer/jonathan/pending"
-  />
-
-  <button className="px-4 py-2 rounded-md border border-zinc-500 hover:bg-zinc-100 hover:text-black transition">
-    Get the workshop
-  </button>
-</form>
-        <iframe name="bd-subscribe" className="hidden" />
-
-        <p className="text-xs text-zinc-500">No spam. Unsubscribe anytime.</p>
+        {/* Always offer a manual path for return visitors */}
+        <p className="text-xs text-zinc-500">
+          Already confirmed?{" "}
+          <a href="/midsummer/jonathan/workshop" className="underline underline-offset-4">
+            Continue to the workshop
+          </a>
+          .
+        </p>
       </div>
     </main>
   );
