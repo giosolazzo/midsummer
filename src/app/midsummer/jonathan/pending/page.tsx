@@ -1,31 +1,42 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
-export const metadata = {
-  robots: { index: false, follow: false },
-};
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function Pending() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    // If already confirmed (e.g., returning), go immediately.
-    if (localStorage.getItem("ms_jonathan_status") === "confirmed") {
-      router.replace("/midsummer/jonathan/workshop");
-      return;
-    }
+    const email =
+      searchParams.get("email_address") ||
+      (typeof window !== "undefined"
+        ? localStorage.getItem("ms_jonathan_email") || ""
+        : "");
 
-    // If another tab sets confirmed, this listener fires and we navigate.
-    function onStorage(e: StorageEvent) {
-      if (e.key === "ms_jonathan_status" && e.newValue === "confirmed") {
-        router.replace("/midsummer/jonathan/workshop");
+    if (!email) return;
+
+    async function checkOnce() {
+      try {
+        const res = await fetch(`/api/bd-status?email=${encodeURIComponent(email)}`, {
+          cache: "no-store",
+        });
+        const json = await res.json();
+        if (json?.confirmed) {
+          try {
+            localStorage.setItem("ms_jonathan_status", "confirmed");
+          } catch {}
+          router.replace("/midsummer/jonathan/workshop");
+        }
+      } catch {
+        // ignore and retry
       }
     }
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, [router]);
+
+    checkOnce();
+    const id = setInterval(checkOnce, 2500);
+    return () => clearInterval(id);
+  }, [router, searchParams]);
 
   return (
     <main className="min-h-screen bg-black text-zinc-100 px-6 py-10">
@@ -33,8 +44,8 @@ export default function Pending() {
         <div className="text-5xl">📬</div>
         <h1 className="text-3xl font-semibold">Check your email</h1>
         <p className="text-zinc-300">
-          We sent a confirmation link. Click it to unlock the workshop — this page will
-          automatically continue.
+          We sent a confirmation link. After you click it, this page will continue
+          automatically.
         </p>
 
         <div className="rounded-2xl border border-zinc-700/60 p-5 text-left text-zinc-300">
@@ -49,4 +60,3 @@ export default function Pending() {
     </main>
   );
 }
-

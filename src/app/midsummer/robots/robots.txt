@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /midsummer/jonathan/pending
+Disallow: /midsummer/jonathan/workshop

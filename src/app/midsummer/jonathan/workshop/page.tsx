@@ -2,18 +2,12 @@
 
 import { useEffect } from "react";
 
-export const metadata = {
-  robots: { index: false, follow: false },
-};
-
 export default function JonathanWorkshop() {
-  // Mark this device as confirmed so the /pending tab (if open) can auto-redirect.
+  // Mark confirmed so /pending can auto-redirect on this device.
   useEffect(() => {
     try {
       localStorage.setItem("ms_jonathan_status", "confirmed");
-    } catch {
-      // ignore if localStorage is unavailable
-    }
+    } catch {}
   }, []);
 
   return (
@@ -24,7 +18,7 @@ export default function JonathanWorkshop() {
           A focused 15-minute exercise to move from [stuck] to [specific action].
         </p>
 
-        {/* Video (replace the file when your final export is ready) */}
+        {/* Replace with your final files when ready */}
         <video
           controls
           className="w-full rounded-xl border border-zinc-700/60"
@@ -32,7 +26,6 @@ export default function JonathanWorkshop() {
           poster="/workshops/jonathan-poster.jpg"
         />
 
-        {/* Worksheet (optional) */}
         <a
           className="underline underline-offset-4"
           href="/workshops/jonathan-worksheet.pdf"
@@ -42,7 +35,6 @@ export default function JonathanWorkshop() {
           Download the 1-page worksheet
         </a>
 
-        {/* Simple run-of-show (edit later) */}
         <section>
           <h2 className="text-lg font-medium mb-2">Steps (15 minutes)</h2>
           <ol className="list-decimal pl-6 text-zinc-300 space-y-1">
