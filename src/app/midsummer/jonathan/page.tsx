@@ -12,21 +12,35 @@ export default function JonathanLanding() {
           <li>1-page worksheet</li>
           <li>A 15-minute action you’ll finish today</li>
         </ul>
+<form
+  action="https://buttondown.com/api/emails/embed-subscribe/midsummer"
+  method="post"
+  className="space-x-2"
+>
+  <label htmlFor="bd-email" className="sr-only">Enter your email</label>
+  <input
+    type="email"
+    name="email"
+    id="bd-email"
+    placeholder="you@domain.com"
+    required
+    className="px-4 py-2 rounded-md text-black"
+  />
 
-        {/* TEMP: simple test form that navigates to the workshop page.
-            We'll replace this with Buttondown/MailerLite later. */}
-        <form action="/midsummer/jonathan/workshop" method="get" className="space-x-2">
-          <input
-            type="email"
-            name="email"
-            placeholder="you@domain.com"
-            required
-            className="px-4 py-2 rounded-md text-black"
-          />
-          <button className="px-4 py-2 rounded-md border border-zinc-500 hover:bg-zinc-100 hover:text-black transition">
-            Get the workshop
-          </button>
-        </form>
+  {/* Tag this subscriber so you know which workshop they wanted */}
+  <input type="hidden" name="tag" value="Midsummer-Jonathan" />
+
+  {/* After subscribing, send them straight to the workshop page */}
+  <input
+    type="hidden"
+    name="redirect_url"
+    value="https://midsummerlab.com/midsummer/jonathan/workshop"
+  />
+
+  <button className="px-4 py-2 rounded-md border border-zinc-500 hover:bg-zinc-100 hover:text-black transition">
+    Get the workshop
+  </button>
+</form>
 
         <p className="text-xs text-zinc-500">No spam. Unsubscribe anytime.</p>
       </div>
