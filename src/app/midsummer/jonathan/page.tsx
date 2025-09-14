@@ -34,30 +34,25 @@ export default function JonathanLanding() {
 
         {/* Post to Buttondown in a hidden iframe; your site controls navigation */}
         <form
-          action="https://buttondown.com/api/emails/embed-subscribe/midsummer"
-          method="post"
-          target="bd-subscribe"
-          onSubmit={handleSubmit}
-          className="flex gap-2 items-center"
-        >
-          <label htmlFor="bd-email" className="sr-only">
-            Enter your email
-          </label>
-          <input
-            type="email"
-            name="email"
-            id="bd-email"
-            placeholder="you@domain.com"
-            required
-            className="w-full max-w-sm px-4 py-2 rounded-md bg-white text-black placeholder:text-zinc-500"
-          />
-          {/* Tag this subscriber so you know which workshop they wanted */}
-          <input type="hidden" name="tag" value="Midsummer-Jonathan" />
-          {/* No redirect_url here — Buttondown's Confirmation Success redirect will send them to /workshop */}
-          <button className="px-4 py-2 rounded-md border border-zinc-500 hover:bg-zinc-100 hover:text-black transition">
-            Get the workshop
-          </button>
-        </form>
+  action="https://buttondown.com/api/emails/embed-subscribe/midsummer"
+  method="post"
+  className="flex gap-2 items-center"
+>
+  <label htmlFor="bd-email" className="sr-only">Enter your email</label>
+  <input
+    type="email"
+    name="email"
+    id="bd-email"
+    required
+    placeholder="you@domain.com"
+    className="w-full max-w-sm px-4 py-2 rounded-md bg-white text-black placeholder:text-zinc-500"
+  />
+  <input type="hidden" name="tag" value="Midsummer-Jonathan" />
+  {/* no redirect_url here — Buttondown settings handle both redirects */}
+  <button className="px-4 py-2 rounded-md border border-zinc-500 hover:bg-zinc-100 hover:text-black transition">
+    Get the workshop
+  </button>
+</form>
 
         {/* Hidden target so the page itself doesn't navigate away */}
         <iframe name="bd-subscribe" className="hidden" />
