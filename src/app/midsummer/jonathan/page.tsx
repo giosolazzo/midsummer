@@ -1,4 +1,23 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
+
 export default function JonathanLanding() {
+  const router = useRouter();
+  const submitted = useRef(false);
+
+  function handleSubmit() {
+    if (submitted.current) return;         // avoid double-click issues
+    submitted.current = true;
+
+    // Let the form POST to Buttondown in the hidden iframe,
+    // then move the user to your pending page.
+    setTimeout(() => {
+      router.push("/midsummer/jonathan/pending");
+    }, 200);
+  }
+
   return (
     <main className="min-h-screen bg-black text-zinc-100 px-6 py-10">
       <div className="max-w-2xl mx-auto space-y-6">
@@ -13,11 +32,13 @@ export default function JonathanLanding() {
           <li>A 15-minute action you’ll finish today</li>
         </ul>
 
-        {/* Normal post to Buttondown; Buttondown custom redirects handle the flow */}
+        {/* Post to Buttondown in a hidden iframe; your site controls navigation */}
         <form
           action="https://buttondown.com/api/emails/embed-subscribe/midsummer"
           method="post"
-          className="space-x-2"
+          target="bd-subscribe"
+          onSubmit={handleSubmit}
+          className="flex gap-2 items-center"
         >
           <label htmlFor="bd-email" className="sr-only">
             Enter your email
@@ -28,21 +49,18 @@ export default function JonathanLanding() {
             id="bd-email"
             placeholder="you@domain.com"
             required
-            className="px-4 py-2 rounded-md text-black"
+            className="w-full max-w-sm px-4 py-2 rounded-md bg-white text-black placeholder:text-zinc-500"
           />
-
           {/* Tag this subscriber so you know which workshop they wanted */}
           <input type="hidden" name="tag" value="Midsummer-Jonathan" />
-
-          {/* No redirect_url or JS here — we use Buttondown’s Custom redirects:
-              - Subscription redirect → /midsummer/jonathan/pending
-              - Confirmation success redirect → /midsummer/jonathan/workshop
-          */}
-
+          {/* No redirect_url here — Buttondown's Confirmation Success redirect will send them to /workshop */}
           <button className="px-4 py-2 rounded-md border border-zinc-500 hover:bg-zinc-100 hover:text-black transition">
             Get the workshop
           </button>
         </form>
+
+        {/* Hidden target so the page itself doesn't navigate away */}
+        <iframe name="bd-subscribe" className="hidden" />
 
         <p className="text-xs text-zinc-500">No spam. Unsubscribe anytime.</p>
       </div>
