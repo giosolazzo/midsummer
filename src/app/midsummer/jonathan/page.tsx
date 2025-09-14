@@ -1,24 +1,4 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { useRef } from "react";
-
 export default function JonathanLanding() {
-  const router = useRouter();
-  const submitted = useRef(false);
-
-  function handleSubmit() {
-    // prevent double clicks from redirecting twice
-    if (submitted.current) return;
-    submitted.current = true;
-
-    // let the form post to Buttondown in the hidden iframe,
-    // then take the user straight to the workshop
-    setTimeout(() => {
-      router.push("/midsummer/jonathan/workshop");
-    }, 300);
-  }
-
   return (
     <main className="min-h-screen bg-black text-zinc-100 px-6 py-10">
       <div className="max-w-2xl mx-auto space-y-6">
@@ -33,12 +13,10 @@ export default function JonathanLanding() {
           <li>A 15-minute action you’ll finish today</li>
         </ul>
 
-        {/* Submit to Buttondown in a hidden iframe, then redirect here */}
+        {/* Normal post to Buttondown; Buttondown custom redirects handle the flow */}
         <form
           action="https://buttondown.com/api/emails/embed-subscribe/midsummer"
           method="post"
-          target="bd-subscribe"
-          onSubmit={handleSubmit}
           className="space-x-2"
         >
           <label htmlFor="bd-email" className="sr-only">
@@ -52,19 +30,19 @@ export default function JonathanLanding() {
             required
             className="px-4 py-2 rounded-md text-black"
           />
+
+          {/* Tag this subscriber so you know which workshop they wanted */}
           <input type="hidden" name="tag" value="Midsummer-Jonathan" />
-          <input
-            type="hidden"
-            name="redirect_url"
-            value="https://midsummerlab.com/midsummer/jonathan/workshop"
-          />
+
+          {/* No redirect_url or JS here — we use Buttondown’s Custom redirects:
+              - Subscription redirect → /midsummer/jonathan/pending
+              - Confirmation success redirect → /midsummer/jonathan/workshop
+          */}
+
           <button className="px-4 py-2 rounded-md border border-zinc-500 hover:bg-zinc-100 hover:text-black transition">
             Get the workshop
           </button>
         </form>
-
-        {/* hidden target for the form post */}
-        <iframe name="bd-subscribe" className="hidden" />
 
         <p className="text-xs text-zinc-500">No spam. Unsubscribe anytime.</p>
       </div>
