@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function Pending() {
+function PendingBody() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -29,7 +29,7 @@ export default function Pending() {
           router.replace("/midsummer/jonathan/workshop");
         }
       } catch {
-        // ignore and retry
+        // ignore and retry on next tick
       }
     }
 
@@ -51,12 +51,35 @@ export default function Pending() {
         <div className="rounded-2xl border border-zinc-700/60 p-5 text-left text-zinc-300">
           <p className="font-medium mb-2">If you don’t see it:</p>
           <ul className="list-disc pl-6 space-y-1">
-            <li>Look in <span className="font-medium">Spam</span> or <span className="font-medium">Promotions</span>.</li>
+            <li>
+              Look in <span className="font-medium">Spam</span> or{" "}
+              <span className="font-medium">Promotions</span>.
+            </li>
             <li>Give it up to a minute to arrive.</li>
-            <li>Still nothing? <a href="/midsummer/jonathan" className="underline">submit your email again</a>.</li>
+            <li>
+              Still nothing?{" "}
+              <a href="/midsummer/jonathan" className="underline">
+                submit your email again
+              </a>
+              .
+            </li>
           </ul>
         </div>
       </div>
     </main>
+  );
+}
+
+export default function Pending() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-black text-zinc-100 px-6 py-10">
+          <div className="max-w-xl mx-auto text-center">Loading…</div>
+        </main>
+      }
+    >
+      <PendingBody />
+    </Suspense>
   );
 }
