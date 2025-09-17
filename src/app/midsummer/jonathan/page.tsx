@@ -47,11 +47,11 @@ export default function JonathanLanding() {
         </ul>
 
         <form
-          action="https://buttondown.com/api/emails/embed-subscribe/midsummer"
-          method="post"
-          onSubmit={rememberEmail}
-          className="flex gap-2 items-center"
-        >
+  action="https://buttondown.email/api/emails/embed-subscribe/midsummer"
+  method="post"
+  onSubmit={rememberEmail}
+  className="flex gap-2 items-center"
+>
           <label htmlFor="bd-email" className="sr-only">Enter your email</label>
           <input
             type="email"

@@ -1,26 +1,34 @@
 "use client";
 
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 function PendingBody() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const checking = useRef<number | null>(null);
 
   useEffect(() => {
-    const email =
-      searchParams.get("email_address") ||
-      (typeof window !== "undefined"
-        ? localStorage.getItem("ms_jonathan_email") || ""
-        : "");
-
-    if (!email) return;
-
-    async function checkOnce() {
+    function emailFromContext() {
+      const fromQuery =
+        searchParams.get("email_address") ||
+        searchParams.get("email") ||
+        "";
+      if (fromQuery) return fromQuery;
       try {
-        const res = await fetch(`/api/bd-status?email=${encodeURIComponent(email)}`, {
-          cache: "no-store",
-        });
+        return localStorage.getItem("ms_jonathan_email") || "";
+      } catch {
+        return "";
+      }
+    }
+
+    async function checkOnce(email: string) {
+      if (!email) return;
+      try {
+        const res = await fetch(
+          `/api/bd-status?email=${encodeURIComponent(email)}`,
+          { cache: "no-store" }
+        );
         const json = await res.json();
         if (json?.confirmed) {
           try {
@@ -29,13 +37,30 @@ function PendingBody() {
           router.replace("/midsummer/jonathan/workshop");
         }
       } catch {
-        // ignore and retry on next tick
+        // ignore and retry
       }
     }
 
-    checkOnce();
-    const id = setInterval(checkOnce, 2500);
-    return () => clearInterval(id);
+    // 1) Listen for a broadcast from /confirmed in the same browser profile
+    let channel: BroadcastChannel | null = null;
+    try {
+      channel = new BroadcastChannel("ms_midsummer");
+      channel.onmessage = (msg) => {
+        if (msg?.data?.type === "confirmed") {
+          router.replace("/midsummer/jonathan/workshop");
+        }
+      };
+    } catch {}
+
+    // 2) Poll the server so this works across windows/profiles
+    const email = emailFromContext();
+    checkOnce(email);
+    checking.current = window.setInterval(() => checkOnce(email), 2500);
+
+    return () => {
+      if (checking.current) window.clearInterval(checking.current);
+      if (channel) channel.close();
+    };
   }, [router, searchParams]);
 
   return (
@@ -44,8 +69,8 @@ function PendingBody() {
         <div className="text-5xl">📬</div>
         <h1 className="text-3xl font-semibold">Check your email</h1>
         <p className="text-zinc-300">
-          We sent a confirmation link. After you click it, this page will continue
-          automatically.
+          We sent a confirmation link. After you click it, this page will
+          continue automatically.
         </p>
 
         <div className="rounded-2xl border border-zinc-700/60 p-5 text-left text-zinc-300">
