@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import EmailGate from "@/components/EmailGate";
 import { WORKSHOPS } from "@/workshops";
 
@@ -24,12 +25,13 @@ export default function WorkshopLanding({ params }: { params: { slug: string } }
 
         <p className="text-xs text-zinc-500">
           Already confirmed?{" "}
-          <a
+          <Link
             href={`/midsummer/${params.slug}/workshop`}
             className="underline underline-offset-4"
           >
             Continue to the workshop
-          </a>.
+          </Link>
+          .
         </p>
       </div>
     </main>

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Pending({ params }: { params: { slug: string } }) {
   const router = useRouter();
@@ -25,7 +26,11 @@ export default function Pending({ params }: { params: { slug: string } }) {
       };
     } catch {}
 
-    return () => { try { ch?.close(); } catch {} };
+    return () => {
+      try {
+        ch?.close();
+      } catch {}
+    };
   }, [router, slug]);
 
   return (
@@ -34,16 +39,16 @@ export default function Pending({ params }: { params: { slug: string } }) {
         <div className="text-5xl">📬</div>
         <h1 className="text-3xl font-semibold">Check your email</h1>
         <p className="text-zinc-300">
-          Click the confirmation link. If this tab and your email are in the same browser,
-          it will continue automatically.
+          Click the confirmation link. If this tab and your email are in the
+          same browser, it will continue automatically.
         </p>
 
-        <a
+        <Link
           href={`/midsummer/${slug}/workshop`}
           className="inline-block mt-2 px-4 py-2 rounded-md border border-zinc-500 hover:bg-zinc-100 hover:text-black transition"
         >
           I’ve confirmed — continue
-        </a>
+        </Link>
       </div>
     </main>
   );
