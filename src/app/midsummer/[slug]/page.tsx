@@ -24,12 +24,12 @@ export default function WorkshopLanding({ params }: { params: { slug: string } }
         <EmailGate slug={params.slug} tag={w.tag} />
 
         <p className="text-xs text-zinc-500">
-          Already confirmed?{" "}
+          Already confirmed on this browser?{" "}
           <Link
-            href={`/midsummer/${params.slug}/workshop`}
+            href={`/midsummer/${params.slug}/pending`}
             className="underline underline-offset-4"
           >
-            Continue to the workshop
+            Check & continue
           </Link>
           .
         </p>
