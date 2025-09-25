@@ -1,26 +1,43 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* Design tokens (from your Squarespace styles) */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* palette */
+  --color-ivory: #e6e6e1;        /* Light 1 background */
+  --color-ink: #0a0a0a;          /* near-black */
+  --color-navy: #253149;         /* Bright 2 (deep slate / navy) */
+  --color-charcoal: #262424;     /* Dark 1 */
+  --color-graphite: #1f1e1e;     /* Dark 2 */
+
+  /* semantic */
+  --color-bg: var(--color-ivory);
+  --color-fg: #111111;
+
+  /* type (Manrope for headings, Poppins for text/buttons) */
+  --font-heading: var(--font-geist-sans);   /* swap to Manrope when you add it */
+  --font-body: var(--font-geist-sans);      /* swap to Poppins when you add it */
+
+  /* radii */
+  --radius-xl: 9999px;  /* pill buttons */
+  --radius-lg: 24px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* dark mode base (only for the black hero areas) */
+:root.dark {
+  --color-bg: #000000;
+  --color-fg: #ededed;
+}
+
+html, body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-body);
 }
+
+/* utilities that mirror your look */
+.rounded-pill { border-radius: var(--radius-xl); }
+.shadow-soft { box-shadow: 0 8px 30px rgba(0,0,0,.12); }
