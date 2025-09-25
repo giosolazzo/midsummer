@@ -1,16 +1,13 @@
-// src/app/robots.ts
 import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
+  const host =
+    process.env.NODE_ENV === "production"
+      ? "https://midsummerlab.com"
+      : "http://localhost:3000";
+
   return {
-    rules: [
-      {
-        userAgent: "*",
-        allow: "/",
-        // we don’t want these indexed
-        disallow: ["/midsummer/*/pending", "/midsummer/*/confirmed"],
-      },
-    ],
-    sitemap: "https://midsummerlab.com/sitemap.xml",
+    rules: [{ userAgent: "*", allow: "/" }],
+    sitemap: `${host}/sitemap.xml`,
   };
 }
