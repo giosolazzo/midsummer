@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "../globals.css"; // NOTE: one level up from /midsummer
+import "./globals.css"; // NOTE: one level up from /midsummer
 import { Analytics } from "@vercel/analytics/react";
 // If you also have a header component, you can import it too:
 // import SiteHeader from "@/components/SiteHeader";
