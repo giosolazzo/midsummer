@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css"; // NOTE: one level up from /midsummer
 import { Analytics } from "@vercel/analytics/react";
-// If you also have a header component, you can import it too:
-// import SiteHeader from "@/components/SiteHeader";
+import SiteHeader from "@/components/SiteHeader";   // ← UNCOMMENTED
 import SiteFooter from "@/components/SiteFooter";
 
 // --- SEO base ---
@@ -33,15 +32,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* Optional header at the top of every page */}
-        {/* <SiteHeader /> */}
-
+        <SiteHeader />                     {/* ← ADDED */}
         {children}
-
-        {/* Footer goes directly under children (before analytics is fine) */}
         <SiteFooter />
-
-        {/* Cookie-less analytics */}
         <Analytics />
       </body>
     </html>
