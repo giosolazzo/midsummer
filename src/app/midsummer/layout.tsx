@@ -1,17 +1,23 @@
-export const metadata = {
-  title: {
-    default: "Midsummer Workshops",
-    template: "%s • Midsummer",
-  },
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import { Analytics } from "@vercel/analytics/react"; // ← add this
+
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "Midsummer",
   description: "Spoken explorations + hands-on workshops to break perfectionism.",
-  metadataBase: new URL("https://midsummerlab.com"),
-  openGraph: {
-    url: "https://midsummerlab.com/midsummer",
-    siteName: "Midsummer",
-    type: "website",
-  },
 };
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return children;
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="en">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {children}
+        <Analytics /> {/* pageviews + countries, referrers, devices */}
+      </body>
+    </html>
+  );
 }
