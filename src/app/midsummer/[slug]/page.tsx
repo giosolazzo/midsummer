@@ -1,7 +1,41 @@
+// src/app/midsummer/[slug]/page.tsx
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import EmailGate from "@/components/EmailGate";
 import { WORKSHOPS } from "@/workshops";
+
+export async function generateMetadata(
+  { params }: { params: { slug: string } }
+): Promise<Metadata> {
+  const w = WORKSHOPS[params.slug];
+  if (!w) return {}; // Next will 404 via the page component
+
+  const base = "https://midsummerlab.com";
+  const url = `${base}/midsummer/${params.slug}`;
+  const title = `${w.title} — Midsummer Workshops`;
+  const description =
+    "Spoken explorations + hands-on workshops to break perfectionism.";
+
+  return {
+    title,
+    description,
+    openGraph: {
+      type: "article",
+      url,
+      title,
+      description,
+      // put a real image later; file can live in /public/og-default.jpg
+      images: [{ url: `${base}/og-default.jpg` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`${base}/og-default.jpg`],
+    },
+  };
+}
 
 export default function WorkshopLanding({ params }: { params: { slug: string } }) {
   const w = WORKSHOPS[params.slug];
@@ -24,14 +58,13 @@ export default function WorkshopLanding({ params }: { params: { slug: string } }
         <EmailGate slug={params.slug} tag={w.tag} />
 
         <p className="text-xs text-zinc-500">
-          Already confirmed on this browser?{" "}
+          Already confirmed?{" "}
           <Link
-            href={`/midsummer/${params.slug}/pending`}
+            href={`/midsummer/${params.slug}/workshop`}
             className="underline underline-offset-4"
           >
-            Check & continue
-          </Link>
-          .
+            Continue to the workshop
+          </Link>.
         </p>
       </div>
     </main>
