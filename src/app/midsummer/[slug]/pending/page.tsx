@@ -4,20 +4,31 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+const CONFIRM_TTL_MS = 1000 * 60 * 60 * 24; // 24 hours
+
+function isFreshConfirmed(slug: string) {
+  try {
+    const status = localStorage.getItem(`ms_${slug}_status`);
+    const atRaw = localStorage.getItem(`ms_${slug}_confirmed_at`);
+    const at = atRaw ? Number(atRaw) : 0;
+    if (status !== "confirmed" || !at) return false;
+    return Date.now() - at < CONFIRM_TTL_MS;
+  } catch {
+    return false;
+  }
+}
+
 export default function Pending({ params }: { params: { slug: string } }) {
   const router = useRouter();
   const { slug } = params;
 
   useEffect(() => {
-    // if this browser is already marked confirmed, go straight in
-    try {
-      if (localStorage.getItem(`ms_${slug}_status`) === "confirmed") {
-        router.replace(`/midsummer/${slug}/workshop`);
-        return;
-      }
-    } catch {}
+    if (isFreshConfirmed(slug)) {
+      router.replace(`/midsummer/${slug}/workshop`);
+      return;
+    }
 
-    // otherwise, listen for a broadcast from the /confirmed page
+    // Listen for broadcast from /confirmed (when user clicks email link)
     let ch: BroadcastChannel | null = null;
     try {
       ch = new BroadcastChannel(`ms_midsummer_${slug}`);
@@ -28,10 +39,16 @@ export default function Pending({ params }: { params: { slug: string } }) {
       };
     } catch {}
 
+    // Also poll in case BroadcastChannel fails (Safari quirks, etc.)
+    const t = setInterval(() => {
+      if (isFreshConfirmed(slug)) router.replace(`/midsummer/${slug}/workshop`);
+    }, 800);
+
     return () => {
       try {
         ch?.close();
       } catch {}
+      clearInterval(t);
     };
   }, [router, slug]);
 
@@ -62,9 +79,8 @@ export default function Pending({ params }: { params: { slug: string } }) {
           </ul>
         </div>
 
-        {/* ❌ Removed the direct “continue to workshop” link (bypass) */}
         <p className="text-sm text-zinc-400">
-          After you click the confirmation link, this page will unlock automatically.
+          After confirmation, the workshop unlocks on this device for 24 hours.
         </p>
       </div>
     </main>

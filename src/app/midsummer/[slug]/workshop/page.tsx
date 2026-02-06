@@ -5,32 +5,33 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { WORKSHOPS } from "@/workshops";
 
+const CONFIRM_TTL_MS = 1000 * 60 * 60 * 24; // 24 hours
+
+function isFreshConfirmed(slug: string) {
+  try {
+    const status = localStorage.getItem(`ms_${slug}_status`);
+    const atRaw = localStorage.getItem(`ms_${slug}_confirmed_at`);
+    const at = atRaw ? Number(atRaw) : 0;
+    if (status !== "confirmed" || !at) return false;
+    return Date.now() - at < CONFIRM_TTL_MS;
+  } catch {
+    return false;
+  }
+}
+
 export default function Workshop({ params }: { params: { slug: string } }) {
   const router = useRouter();
   const { slug } = params;
 
   const w = useMemo(() => WORKSHOPS[slug], [slug]);
 
-  // ✅ ENFORCE GATE: if not confirmed in this browser, send to /pending
   useEffect(() => {
-    try {
-      const status = localStorage.getItem(`ms_${slug}_status`);
-      if (status !== "confirmed") {
-        router.replace(`/midsummer/${slug}/pending`);
-      }
-    } catch {
-      // If localStorage is blocked, treat as unconfirmed
+    if (!isFreshConfirmed(slug)) {
       router.replace(`/midsummer/${slug}/pending`);
     }
   }, [router, slug]);
 
-  // While redirecting (or checking), render nothing to avoid a flash
-  try {
-    const status = localStorage.getItem(`ms_${slug}_status`);
-    if (status !== "confirmed") return null;
-  } catch {
-    return null;
-  }
+  if (!isFreshConfirmed(slug)) return null;
 
   if (!w) {
     return (
@@ -50,7 +51,6 @@ export default function Workshop({ params }: { params: { slug: string } }) {
   return (
     <main className="min-h-screen bg-[--color-bg] text-[--color-fg] px-6 py-14">
       <div className="max-w-3xl mx-auto space-y-8">
-        {/* Header */}
         <header className="space-y-2">
           <p className="text-sm/6 opacity-70">
             <Link href="/midsummer" className="underline underline-offset-4">
@@ -64,7 +64,6 @@ export default function Workshop({ params }: { params: { slug: string } }) {
           </p>
         </header>
 
-        {/* Video (or placeholder) */}
         {w.video ? (
           <video
             controls
@@ -78,7 +77,6 @@ export default function Workshop({ params }: { params: { slug: string } }) {
           </div>
         )}
 
-        {/* Worksheet link */}
         {w.sheet ? (
           <a
             className="inline-block rounded-[9999px] px-5 py-2 border border-black/20 hover:bg-black/[.04] transition"
@@ -94,7 +92,6 @@ export default function Workshop({ params }: { params: { slug: string } }) {
           </p>
         )}
 
-        {/* Simple step list (optional scaffold) */}
         <section className="rounded-[var(--radius-lg)] border border-black/10 bg-white p-5">
           <h2 className="text-lg font-medium mb-2">Suggested flow (15–25 min)</h2>
           <ol className="list-decimal pl-6 text-zinc-800 space-y-1">
