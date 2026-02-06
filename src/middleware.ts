@@ -1,14 +1,17 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-// Edge middleware runs before every request
 export async function middleware(req: NextRequest) {
+  // Canonical redirect: /midsummer -> /
+  if (req.nextUrl.pathname === "/midsummer") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url, 301);
+  }
+
   // Only log normal page views (skip assets/API)
   const accept = req.headers.get("accept") || "";
   if (!accept.includes("text/html")) return NextResponse.next();
-
-  // Respect Do Not Track
-  if (req.headers.get("dnt") === "1") return NextResponse.next();
 
   // Derive fields
   const ipHeader = req.headers.get("x-forwarded-for") || "";
