@@ -48,7 +48,7 @@ export default function Confirmed({ params }: { params: { slug: string } }) {
               className="px-4 py-2 rounded-md border border-zinc-600 hover:bg-zinc-100 hover:text-black transition"
               href={`/midsummer/${slug}`}
             >
-              Back to signup
+              Go to the signup page
             </Link>
             <Link
               className="px-4 py-2 rounded-md border border-zinc-600 hover:bg-zinc-100 hover:text-black transition"
