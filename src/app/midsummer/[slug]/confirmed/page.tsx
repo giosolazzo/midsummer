@@ -45,15 +45,12 @@ export default function Confirmed({ params }: { params: { slug: string } }) {
 
           <div className="flex flex-col sm:flex-row gap-2 justify-center">
             <Link
-              className="px-4 py-2 rounded-md border border-zinc-600 hover:bg-zinc-100 hover:text-black transition"
+              className="gs-btn gs-btn-5 text-zinc-100"
               href={`/midsummer/${slug}`}
             >
               Go to the signup page
             </Link>
-            <Link
-              className="px-4 py-2 rounded-md border border-zinc-600 hover:bg-zinc-100 hover:text-black transition"
-              href="/midsummer"
-            >
+            <Link className="gs-btn gs-btn-5 text-zinc-100" href="/midsummer">
               Back to Midsummer
             </Link>
           </div>
@@ -68,20 +65,17 @@ export default function Confirmed({ params }: { params: { slug: string } }) {
         <div className="text-5xl">✅</div>
         <h1 className="text-3xl font-semibold">Email confirmed</h1>
         <p className="text-zinc-300">
-          If your pending tab is still open, return to it — it should continue automatically.
+          If your pending tab is still open, return to it - it should continue automatically.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-2 justify-center">
           <Link
-            className="px-4 py-2 rounded-md border border-zinc-600 hover:bg-zinc-100 hover:text-black transition"
+            className="gs-btn gs-btn-5 text-zinc-100"
             href={`/midsummer/${slug}/workshop`}
           >
             Continue to the workshop
           </Link>
-          <Link
-            className="px-4 py-2 rounded-md border border-zinc-600 hover:bg-zinc-100 hover:text-black transition"
-            href="/midsummer"
-          >
+          <Link className="gs-btn gs-btn-5 text-zinc-100" href="/midsummer">
             Back to Midsummer
           </Link>
         </div>

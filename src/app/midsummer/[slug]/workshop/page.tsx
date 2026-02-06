@@ -73,13 +73,13 @@ export default function Workshop({ params }: { params: { slug: string } }) {
           />
         ) : (
           <div className="w-full aspect-video rounded-[var(--radius-lg)] border border-black/15 bg-black/80 grid place-items-center text-white/70">
-            Video placeholder — add file path in WORKSHOPS.
+            Video placeholder - add file path in WORKSHOPS.
           </div>
         )}
 
         {w.sheet ? (
           <a
-            className="inline-block rounded-[9999px] px-5 py-2 border border-black/20 hover:bg-black/[.04] transition"
+            className="gs-btn gs-btn-5 text-zinc-100"
             href={w.sheet}
             target="_blank"
             rel="noopener noreferrer"
@@ -93,7 +93,7 @@ export default function Workshop({ params }: { params: { slug: string } }) {
         )}
 
         <section className="rounded-[var(--radius-lg)] border border-black/10 bg-white p-5">
-          <h2 className="text-lg font-medium mb-2">Suggested flow (15–25 min)</h2>
+          <h2 className="text-lg font-medium mb-2">Suggested flow (15-25 min)</h2>
           <ol className="list-decimal pl-6 text-zinc-800 space-y-1">
             <li>Open the worksheet.</li>
             <li>Watch the video section-by-section.</li>

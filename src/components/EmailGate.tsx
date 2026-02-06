@@ -35,7 +35,7 @@ export default function EmailGate({ slug, tag }: Props) {
       {/* After submit, Buttondown sends them to the pending page */}
       <input type="hidden" name="redirect_url" value={REDIRECT} />
 
-      <button className="px-4 py-2 rounded-md border border-zinc-500 hover:bg-zinc-100 hover:text-black transition">
+      <button className="gs-btn gs-btn-5 text-zinc-100" type="submit">
         Get the workshop
       </button>
     </form>
