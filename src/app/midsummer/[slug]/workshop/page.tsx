@@ -1,19 +1,36 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { WORKSHOPS } from "@/workshops";
 
 export default function Workshop({ params }: { params: { slug: string } }) {
+  const router = useRouter();
   const { slug } = params;
-  const w = WORKSHOPS[slug];
 
-  // Mark this browser as confirmed so /pending can auto-continue
+  const w = useMemo(() => WORKSHOPS[slug], [slug]);
+
+  // ✅ ENFORCE GATE: if not confirmed in this browser, send to /pending
   useEffect(() => {
     try {
-      localStorage.setItem(`ms_${slug}_status`, "confirmed");
-    } catch {}
-  }, [slug]);
+      const status = localStorage.getItem(`ms_${slug}_status`);
+      if (status !== "confirmed") {
+        router.replace(`/midsummer/${slug}/pending`);
+      }
+    } catch {
+      // If localStorage is blocked, treat as unconfirmed
+      router.replace(`/midsummer/${slug}/pending`);
+    }
+  }, [router, slug]);
+
+  // While redirecting (or checking), render nothing to avoid a flash
+  try {
+    const status = localStorage.getItem(`ms_${slug}_status`);
+    if (status !== "confirmed") return null;
+  } catch {
+    return null;
+  }
 
   if (!w) {
     return (

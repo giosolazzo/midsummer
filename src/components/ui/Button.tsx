@@ -16,14 +16,14 @@ export default function Button({
   variant = "primary",
   className,
 }: Props) {
-  const base =
-    "inline-flex items-center justify-center rounded-pill px-5 py-2 text-sm transition-colors duration-200";
+  // Use Giuseppe-style buttons as the base everywhere
+  const base = "gs-btn gs-btn-5";
 
+  // Keep variants lightweight (mostly spacing / disabled look)
   const styles = {
-    primary: "bg-[--color-navy] text-white hover:opacity-90",
-    secondary:
-      "border border-[--color-navy] text-[--color-navy] bg-transparent hover:bg-[--color-navy] hover:text-white",
-    tertiary: "underline underline-offset-4 text-[--color-navy] hover:opacity-80",
+    primary: "",
+    secondary: "",
+    tertiary: "underline underline-offset-4 border-transparent outline-none shadow-none hover:opacity-80",
   }[variant];
 
   const classes = clsx(base, styles, className);

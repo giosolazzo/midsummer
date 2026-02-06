@@ -1,43 +1,186 @@
 @import "tailwindcss";
 
-/* Design tokens (from your Squarespace styles) */
-@theme inline {
+/* ---- design tokens ---- */
+:root {
   /* palette */
-  --color-ivory: #e6e6e1;        /* Light 1 background */
-  --color-ink: #0a0a0a;          /* near-black */
-  --color-navy: #253149;         /* Bright 2 (deep slate / navy) */
-  --color-charcoal: #262424;     /* Dark 1 */
-  --color-graphite: #1f1e1e;     /* Dark 2 */
+  --color-ivory: #e6e6e1;
+  --color-ink: #0a0a0a;
+  --color-navy: #253149;
+  --color-charcoal: #262424;
+  --color-graphite: #1f1e1e;
 
-  /* semantic */
-  --color-bg: var(--color-ivory);
-  --color-fg: #111111;
+  /* semantic (DEFAULT SITE THEME = DARK) */
+  --color-bg: #000000;
+  --color-fg: #ededed;
 
-  /* type (Manrope for headings, Poppins for text/buttons) */
-  --font-heading: var(--font-geist-sans);   /* swap to Manrope when you add it */
-  --font-body: var(--font-geist-sans);      /* swap to Poppins when you add it */
+  /* type (kept Geist from next/font) */
+  --font-heading: var(--font-geist-sans);
+  --font-body: var(--font-geist-sans);
 
   /* radii */
-  --radius-xl: 9999px;  /* pill buttons */
+  --radius-xl: 9999px;
   --radius-lg: 24px;
+
+  /* layout */
+  --hdr: 56px;
+  --ftr: 56px;
 }
 
-/* dark mode base (only for the black hero areas) */
+/* optional light theme if you ever need it */
+:root.light {
+  --color-bg: var(--color-ivory);
+  --color-fg: #111111;
+}
+
+/* dark hero option if you ever need it */
 :root.dark {
   --color-bg: #000000;
   --color-fg: #ededed;
 }
 
-html, body {
+html,
+body {
   height: 100%;
+  background: var(--color-bg);
 }
 
 body {
+  margin: 0;
   background: var(--color-bg);
   color: var(--color-fg);
   font-family: var(--font-body);
 }
 
-/* utilities that mirror your look */
+/* utilities */
 .rounded-pill { border-radius: var(--radius-xl); }
 .shadow-soft { box-shadow: 0 8px 30px rgba(0,0,0,.12); }
+
+/* ---- Portfolio page chrome overrides ---- */
+body.portfolio-skin .site-header,
+body.portfolio-skin .site-footer {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  backdrop-filter: none !important;
+}
+
+/* =========================================================
+   Button system (surgical)
+   Apply ONLY by adding: className="gs-btn gs-btn-5"
+   ========================================================= */
+
+.gs-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 40px;
+  padding: 0 24px;
+  border-radius: 9999px;
+
+  border: 1px solid rgba(63, 63, 70, 0.70);
+  color: rgba(212, 212, 216, 0.80);
+
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+
+  transition: color 200ms ease, border-color 200ms ease;
+}
+
+.gs-btn:hover {
+  border-color: rgba(161, 161, 170, 0.70);
+  color: rgba(244, 244, 245, 0.92);
+}
+
+.gs-btn:focus-visible {
+  outline: 2px solid rgba(244, 244, 245, 0.25);
+  outline-offset: 3px;
+}
+
+.gs-btn-icon {
+  padding: 0 16px;
+}
+
+/* =========================
+   Effect: "btn-5"
+   ========================= */
+.gs-btn-5 {
+  border: 1px solid rgba(63, 63, 70, 0.70);
+
+  outline: 1px solid rgba(244, 244, 245, 0.35);
+  outline-offset: 0px;
+  box-shadow: inset 0 0 20px rgba(244, 244, 245, 0);
+
+  transition: all 900ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.gs-btn-5:hover {
+  border-color: rgba(244, 244, 245, 0.35);
+
+  box-shadow:
+    inset 0 0 20px rgba(244, 244, 245, 0.35),
+    0 0 18px rgba(244, 244, 245, 0.12);
+
+  outline-color: rgba(244, 244, 245, 0);
+  outline-offset: 12px;
+
+  text-shadow: 1px 1px 2px rgba(66, 115, 136, 0.35);
+}
+
+/* =========================================================
+   Card system (same nature as gs-btn-5)
+   Apply ONLY by adding: className="gs-card"
+   ========================================================= */
+
+.gs-card {
+  border: 1px solid rgba(63, 63, 70, 0.70);
+  outline: 1px solid rgba(244, 244, 245, 0.22);
+  outline-offset: 0px;
+  box-shadow: inset 0 0 20px rgba(244, 244, 245, 0);
+
+  transition: all 900ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.gs-card:hover {
+  border-color: rgba(244, 244, 245, 0.35);
+
+  box-shadow:
+    inset 0 0 20px rgba(244, 244, 245, 0.22),
+    0 0 18px rgba(244, 244, 245, 0.10);
+
+  outline-color: rgba(244, 244, 245, 0);
+  outline-offset: 10px;
+}
+
+/* =========================================================
+   Header text effect (variable font weight on hover)
+   Apply ONLY by adding: className="gs-title-wght"
+   ========================================================= */
+
+.gs-title-wght {
+  font-variation-settings: "wght" 420;
+  transition: font-variation-settings 800ms ease-out, color 200ms ease;
+  will-change: font-variation-settings;
+}
+
+.gs-title-wght:hover {
+  font-variation-settings: "wght" 900;
+}
+
+/* Fallback */
+@supports not (font-variation-settings: "wght" 420) {
+  .gs-title-wght { font-weight: 500; }
+  .gs-title-wght:hover { font-weight: 800; }
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .gs-btn,
+  .gs-btn-5,
+  .gs-title-wght,
+  .gs-card {
+    transition: none !important;
+  }
+}
