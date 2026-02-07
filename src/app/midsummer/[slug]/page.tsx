@@ -40,20 +40,42 @@ export default function WorkshopLanding({ params }: { params: { slug: string } }
   const w = WORKSHOPS[params.slug];
   if (!w) return notFound();
 
+  // If a per-workshop link exists, use it. Otherwise, go to the channel.
+  const youtubeHref = w.youtube && w.youtube.trim().length > 0
+    ? w.youtube
+    : "https://www.youtube.com/@midsummerlab";
+
   return (
     <main className="min-h-screen bg-black text-zinc-100 px-6 py-10">
       <div className="max-w-2xl mx-auto space-y-6 text-center">
         <h1 className="text-3xl font-semibold">{w.title}</h1>
+
         <p className="text-zinc-300">
-          Watch the conversation on YouTube, then get the hands-on workshop here.
+          Watch the conversation on{" "}
+          <a
+            href={youtubeHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-4 hover:text-zinc-100 text-zinc-200"
+          >
+            YouTube
+          </a>{" "}
+          - do the hands-on workshop here.
         </p>
 
-        <div className="flex justify-center">
-          <EmailGate slug={params.slug} tag={w.tag} />
-        </div>
+        {/* Email step */}
+        <section className="pt-2 space-y-3">
+          <p className="text-sm text-zinc-400">
+            Step 1 - confirm your email to open the workshop.
+          </p>
+
+          <div className="flex justify-center">
+            <EmailGate slug={params.slug} tag={w.tag} />
+          </div>
+        </section>
 
         <div className="flex justify-center">
-          <div className="text-zinc-500 select-none">----------</div>
+          <div className="text-zinc-600 select-none">------</div>
         </div>
 
         <div className="pt-1 flex justify-center">

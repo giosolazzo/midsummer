@@ -36,25 +36,25 @@ export default function SiteHeader() {
         <div className="mx-auto max-w-7xl px-4 sm:px-8 h-16 flex items-center justify-between gap-4">
           {/* left (logo) */}
           <Link
-            href="/"
+            href="/midsummer"
             className="inline-flex items-center text-zinc-300 hover:text-zinc-100 transition whitespace-nowrap"
             aria-label="Midsummer home"
           >
             <Image
-  src="/images/midsummer.png.png"
-  alt="Midsummer"
-  width={420}
-  height={120}
-  className="h-8 sm:h-10 w-auto"  // <- THIS controls visible size
-  priority
-/>
+              src="/images/midsummer.png.png"
+              alt="Midsummer"
+              width={420}
+              height={120}
+              className="h-8 sm:h-10 w-auto"
+              priority
+            />
           </Link>
 
           {/* right */}
           <nav className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-zinc-400 justify-end">
             <Link
-              href="/#catalog"
-              className="hover:text-zinc-100 transition whitespace-nowrap"
+              href="/midsummer#catalog"
+              className="text-zinc-100 font-medium hover:font-normal transition whitespace-nowrap"
             >
               Workshops
             </Link>
