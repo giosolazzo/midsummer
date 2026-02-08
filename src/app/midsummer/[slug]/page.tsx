@@ -43,7 +43,7 @@ export default function WorkshopLanding({ params }: { params: { slug: string } }
   // If a per-workshop link exists, use it. Otherwise, go to the channel.
   const youtubeHref = w.youtube && w.youtube.trim().length > 0
     ? w.youtube
-    : "https://www.youtube.com/@midsummerlab";
+    : "https://www.youtube.com/watch?v=atXMleOvSu0";
 
   return (
     <main className="min-h-screen bg-black text-zinc-100 px-6 py-10">

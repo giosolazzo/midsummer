@@ -6,7 +6,7 @@ export type Workshop = {
   poster: string;    // poster image path in /public
   sheet: string;     // PDF worksheet path in /public
   video?: string;    // optional local video path or stream URL
-  youtube?: string;  // optional YouTube URL
+  youtube?: string;  // optional YouTube embed URL
 };
 
 export const WORKSHOPS: Record<string, Workshop> = {
@@ -15,9 +15,7 @@ export const WORKSHOPS: Record<string, Workshop> = {
     tag: "Midsummer-Jonathan",
     poster: "/workshops/MS01-Reichental/assets/jonathan.png",
     sheet: "/workshops/MS01-Reichental/assets/MS01-Different_version_of_you.pdf",
-    // Leave these empty until you embed YouTube or upload a file:
-    // video: "/workshops/jonathan.mp4",
-    // youtube: "https://www.youtube.com/@midsummerlab",
+    youtube: "https://www.youtube.com/embed/QtbG9eRLUv8?si=QmEgfadOm-cxQldK",
   },
 
   // add future guests here (slug: {...})

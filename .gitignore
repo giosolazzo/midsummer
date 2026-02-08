@@ -1,7 +1,5 @@
 ﻿# local-only
 _ship_backup/
-public/workshops/
-public/workshops/**
 
 # never commit big media anywhere
 *.mov

@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useMemo } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -77,19 +77,31 @@ export default function Workshop({
   }
 
   // Big placeholder uses same hero metrics. Not Jonathan’s photo as the main placeholder.
-  const heroPlaceholder = "/hero.jpg";
+  const heroPlaceholder =
+    slug === "jonathan"
+      ? "/workshops/MS01-Reichental/assets/youtube_thumbnail_tintin_cartoon_1920x1080_MS01.png"
+      : "/hero.jpg";
 
   const title =
     slug === "jonathan" ? "A different version of you" : w.title || "Workshop";
   const byline = slug === "jonathan" ? "Guided by Jonathan Reichental, PhD" : "";
-  const dateLine = slug === "jonathan" ? "MS01 - May 2025" : "";
+  const dateLine = slug === "jonathan" ? "MS01 - May 2025 ┃ SF - Werqwise" : "";
 
   const hasMp4 = Boolean(w.video && w.video.trim().length > 0);
   const hasYoutubeEmbed = Boolean(w.youtube && w.youtube.trim().length > 0);
 
   // Full conversation link (separate from the embedded workshop video)
   const fullConversationUrl =
-    slug === "jonathan" ? "https://www.youtube.com/@midsummerlab" : "";
+    slug === "jonathan" ? "https://www.youtube.com/watch?v=atXMleOvSu0" : "";
+
+  // click-to-play behavior for YouTube embeds (so your thumbnail shows first)
+  const [playYoutube, setPlayYoutube] = useState(false);
+
+  const youtubeSrcAutoplay = useMemo(() => {
+    if (!w.youtube) return "";
+    const joiner = w.youtube.includes("?") ? "&" : "?";
+    return `${w.youtube}${joiner}autoplay=1`;
+  }, [w.youtube]);
 
   return (
     <main className="min-h-screen bg-black text-zinc-100">
@@ -109,7 +121,9 @@ export default function Workshop({
             </h1>
 
             {byline ? <p className="text-zinc-300">{byline}</p> : null}
-            {dateLine ? <p className="text-sm text-zinc-500">{dateLine}</p> : null}
+            {dateLine ? (
+              <p className="text-sm text-zinc-500">{dateLine}</p>
+            ) : null}
           </header>
 
           {/* Big media block - same height as home HERO */}
@@ -123,13 +137,50 @@ export default function Workshop({
                     src={w.video}
                   />
                 ) : hasYoutubeEmbed ? (
-                  <iframe
-                    className="absolute inset-0 h-full w-full"
-                    src={w.youtube}
-                    title={`${title} video`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
+                  playYoutube ? (
+                    <iframe
+                      className="absolute inset-0 h-full w-full"
+                      src={youtubeSrcAutoplay}
+                      title={`${title} video`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setPlayYoutube(true)}
+                      className="absolute inset-0 w-full h-full text-left"
+                      aria-label="Play workshop video"
+                    >
+                      <Image
+                        src={heroPlaceholder}
+                        alt=""
+                        fill
+                        priority
+                        className="object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/35 to-black/85" />
+                      <div className="absolute inset-0 grid place-items-center">
+                        <div className="flex items-center gap-3 rounded-full border border-zinc-700 bg-black/40 px-5 py-3 hover:bg-black/55 transition">
+                          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-zinc-100/10 border border-zinc-600">
+                            <svg
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              xmlns="http://www.w3.org/2000/svg"
+                              aria-hidden="true"
+                            >
+                              <path d="M8 5v14l11-7L8 5z" />
+                            </svg>
+                          </span>
+                          <span className="text-zinc-100 text-sm sm:text-base"> Play
+
+                          </span>
+                        </div>
+                      </div>
+                    </button>
+                  )
                 ) : (
                   <>
                     <Image
@@ -153,69 +204,68 @@ export default function Workshop({
             </div>
           </section>
 
-{/* Actions row (YouTube + Worksheet) */}
-<section className="px-4 sm:px-8">
-  <div className="mx-auto max-w-5xl">
-    <div className="grid gap-3 items-center sm:grid-cols-[1fr_auto_1fr]">
-      {/* Left button (right-aligned so it “leans” into the center) */}
-      <div className="flex justify-center sm:justify-end">
-        {fullConversationUrl ? (
-          <a
-            className="gs-btn gs-btn-5 text-zinc-100"
-            href={fullConversationUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span className="inline-flex items-center gap-2">
-              <span>Full conversation here →</span>
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path d="M23.498 6.186C23.223 5.154 22.42 4.351 21.388 4.076C19.506 3.571 12 3.571 12 3.571C12 3.571 4.494 3.571 2.612 4.076C1.58 4.351 0.777 5.154 0.502 6.186C0 8.068 0 12 0 12C0 12 0 15.932 0.502 17.814C0.777 18.846 1.58 19.649 2.612 19.924C4.494 20.429 12 20.429 12 20.429C12 20.429 19.506 20.429 21.388 19.924C22.42 19.649 23.223 18.846 23.498 17.814C24 15.932 24 12 24 12C24 12 24 8.068 23.498 6.186ZM9.545 15.568V8.432L15.818 12L9.545 15.568Z" />
-              </svg>
-            </span>
-          </a>
-        ) : null}
-      </div>
+          {/* Actions row (YouTube + Worksheet) */}
+          <section className="px-4 sm:px-8">
+            <div className="mx-auto max-w-5xl">
+              <div className="grid gap-3 items-center sm:grid-cols-[1fr_auto_1fr]">
+                {/* Left button (right-aligned so it “leans” into the center) */}
+                <div className="flex justify-center sm:justify-end">
+                  {fullConversationUrl ? (
+                    <a
+                      className="gs-btn gs-btn-5 text-zinc-100"
+                      href={fullConversationUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span className="inline-flex items-center gap-2">
+                        <span>Full conversation here →</span>
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                        >
+                          <path d="M23.498 6.186C23.223 5.154 22.42 4.351 21.388 4.076C19.506 3.571 12 3.571 12 3.571C12 3.571 4.494 3.571 2.612 4.076C1.58 4.351 0.777 5.154 0.502 6.186C0 8.068 0 12 0 12C0 12 0 15.932 0.502 17.814C0.777 18.846 1.58 19.649 2.612 19.924C4.494 20.429 12 20.429 12 20.429C12 20.429 19.506 20.429 21.388 19.924C22.42 19.649 23.223 18.846 23.498 17.814C24 15.932 24 12 24 12C24 12 24 8.068 23.498 6.186ZM9.545 15.568V8.432L15.818 12L9.545 15.568Z" />
+                        </svg>
+                      </span>
+                    </a>
+                  ) : null}
+                </div>
 
-      {/* Fixed center slash */}
-      <div className="hidden sm:flex justify-center">
-        {fullConversationUrl && w.sheet ? (
-          <span className="text-zinc-600 select-none">/</span>
-        ) : null}
-      </div>
+                {/* Fixed center slash */}
+                <div className="hidden sm:flex justify-center">
+                  {fullConversationUrl && w.sheet ? (
+                    <span className="text-zinc-600 select-none">/</span>
+                  ) : null}
+                </div>
 
-      {/* Right button (left-aligned so it “leans” into the center) */}
-      <div className="flex justify-center sm:justify-start">
-        {w.sheet ? (
-          <a
-            className="gs-btn gs-btn-5 text-zinc-100"
-            href={w.sheet}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Download the worksheet
-          </a>
-        ) : (
-          <p className="text-sm text-zinc-500">Worksheet coming soon.</p>
-        )}
-      </div>
+                {/* Right button (left-aligned so it “leans” into the center) */}
+                <div className="flex justify-center sm:justify-start">
+                  {w.sheet ? (
+                    <a
+                      className="gs-btn gs-btn-5 text-zinc-100"
+                      href={w.sheet}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Download the worksheet
+                    </a>
+                  ) : (
+                    <p className="text-sm text-zinc-500">Worksheet coming soon.</p>
+                  )}
+                </div>
 
-      {/* Mobile: show the slash as its own centered row */}
-      {fullConversationUrl && w.sheet ? (
-        <div className="sm:hidden flex justify-center">
-          <span className="text-zinc-600 select-none">/</span>
-        </div>
-      ) : null}
-    </div>
-  </div>
-</section>
-
+                {/* Mobile: show the slash as its own centered row */}
+                {fullConversationUrl && w.sheet ? (
+                  <div className="sm:hidden flex justify-center">
+                    <span className="text-zinc-600 select-none">/</span>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          </section>
 
           {/* Divider */}
           <div className="flex justify-center">
@@ -239,22 +289,21 @@ export default function Workshop({
 
                 <div className="space-y-4">
                   <h2 className="text-lg font-medium text-zinc-100">
-  Dr. Jonathan Reichental, PhD
-</h2>
+                    Jonathan Reichental, PhD
+                  </h2>
 
-<p className="text-zinc-200 leading-relaxed">
-  Dr. Jonathan Reichental is a multiple-award-winning technology leader and educator. He’s
-  served as CIO at O’Reilly Media and the City of Palo Alto, and previously held roles from
-  senior software engineering manager to director of technology innovation.
-</p>
+                  <p className="text-zinc-200 leading-relaxed">
+                    Dr. Jonathan Reichental is a multiple-award-winning technology leader and educator. He’s
+                    served as CIO at O’Reilly Media and the City of Palo Alto, and previously held roles from
+                    senior software engineering manager to director of technology innovation.
+                  </p>
 
-<p className="text-zinc-200 leading-relaxed">
-  He founded Human Future (advisory, investment, and education), writes for Forbes, and has
-  authored books including <em>Smart Cities for Dummies</em>, <em>Data Governance for Dummies</em>,
-  and <em>Cryptocurrency QuickStart Guide</em>. His LinkedIn Learning courses have reached{" "}
-  <span className="text-zinc-100 font-medium">millions of students</span>.
-</p>
-
+                  <p className="text-zinc-200 leading-relaxed">
+                    He founded Human Future (advisory, investment, and education), writes for Forbes, and has
+                    authored books including <em>Smart Cities for Dummies</em>, <em>Data Governance for Dummies</em>,
+                    and <em>Cryptocurrency QuickStart Guide</em>. His LinkedIn Learning courses have reached{" "}
+                    <span className="text-zinc-100 font-medium">millions of students</span>.
+                  </p>
 
                   <div className="flex flex-wrap items-center gap-3 pt-2">
                     {/* Website icon */}
@@ -271,11 +320,7 @@ export default function Workshop({
                           stroke="currentColor"
                           strokeWidth="1.6"
                         />
-                        <path
-                          d="M2 12H22"
-                          stroke="currentColor"
-                          strokeWidth="1.6"
-                        />
+                        <path d="M2 12H22" stroke="currentColor" strokeWidth="1.6" />
                         <path
                           d="M12 2C14.8 4.8 16.4 8.3 16.4 12C16.4 15.7 14.8 19.2 12 22C9.2 19.2 7.6 15.7 7.6 12C7.6 8.3 9.2 4.8 12 2Z"
                           stroke="currentColor"
