@@ -58,6 +58,20 @@ export default function Workshop({
       router.replace(`/midsummer/${slug}/pending`);
     }
   }, [router, slug]);
+  // click-to-play behavior for YouTube embeds (so your thumbnail shows first)
+  const [playYoutube, setPlayYoutube] = useState(false);
+
+  // Reset play state when navigating between slugs (safe + keeps behavior clean)
+  useEffect(() => {
+    setPlayYoutube(false);
+  }, [slug]);
+
+  const youtubeSrcAutoplay = useMemo(() => {
+    const yt = w?.youtube?.trim();
+    if (!yt) return "";
+    const joiner = yt.includes("?") ? "&" : "?";
+    return `${yt}${joiner}autoplay=1`;
+  }, [w?.youtube]);
 
   if (!isFreshConfirmed(slug)) return null;
 
@@ -93,15 +107,6 @@ export default function Workshop({
   // Full conversation link (separate from the embedded workshop video)
   const fullConversationUrl =
     slug === "jonathan" ? "https://www.youtube.com/watch?v=atXMleOvSu0" : "";
-
-  // click-to-play behavior for YouTube embeds (so your thumbnail shows first)
-  const [playYoutube, setPlayYoutube] = useState(false);
-
-  const youtubeSrcAutoplay = useMemo(() => {
-    if (!w.youtube) return "";
-    const joiner = w.youtube.includes("?") ? "&" : "?";
-    return `${w.youtube}${joiner}autoplay=1`;
-  }, [w.youtube]);
 
   return (
     <main className="min-h-screen bg-black text-zinc-100">
