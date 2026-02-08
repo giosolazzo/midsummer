@@ -41,8 +41,9 @@ export default function WorkshopLanding({ params }: { params: { slug: string } }
   if (!w) return notFound();
 
   // If a per-workshop link exists, use it. Otherwise, go to the channel.
-  const youtubeHref = w.youtube && w.youtube.trim().length > 0
-    ? w.youtube
+const youtubeHref =
+  w.podcast && w.podcast.trim().length > 0
+    ? w.podcast
     : "https://www.youtube.com/watch?v=atXMleOvSu0";
 
   return (
